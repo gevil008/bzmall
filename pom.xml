@@ -8,7 +8,7 @@
     <artifactId>bzmall</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>父级项目,用来统一项目的所有以来的版本</description>
-<!--    父项目中声明子项目-->
+    <!--    父项目中声明子项目-->
     <modules>
         <module>bzmall-dao</module>
         <module>bzmall-common</module>
@@ -37,15 +37,15 @@
         <hutool-version>5.3.10</hutool-version>
     </properties>
 
-<!--    依赖
-        dependencies 中配置的所有依赖 会被子项目继承到 并且会下载到子项目中
-        打包的时候 也会一块儿打包
--->
+    <!--    依赖
+            dependencies 中配置的所有依赖 会被子项目继承到 并且会下载到子项目中
+            打包的时候 也会一块儿打包
+    -->
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-<!--            ${lombok-version} 获取properties中的版本号-->
+            <!--            ${lombok-version} 获取properties中的版本号-->
             <version>${lombok-version}</version>
         </dependency>
 
@@ -57,13 +57,13 @@
         </dependency>
     </dependencies>
 
-<!--    dependencyManagement 为了声明依赖的版本
-       其中配置的所有的jar包 不会被子项目直接继承到  也就是说不会下载到子项目中
+    <!--    dependencyManagement 为了声明依赖的版本
+           其中配置的所有的jar包 不会被子项目直接继承到  也就是说不会下载到子项目中
 
-       怎么用?
-           子项目中导入依赖 如果要导入的依赖在dependencyManagement 中有
-           可以不写版本号
--->
+           怎么用?
+               子项目中导入依赖 如果要导入的依赖在dependencyManagement 中有
+               可以不写版本号
+    -->
     <dependencyManagement>
         <dependencies>
             <!--

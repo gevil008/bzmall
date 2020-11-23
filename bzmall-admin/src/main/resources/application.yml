@@ -15,4 +15,6 @@ spring:
 
 #mybatis-plus
 mybatis-plus:
-  mapper-locations: classpath:mapper/*Mapper.xml
+  mapper-locations: classpath:dao/*Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
