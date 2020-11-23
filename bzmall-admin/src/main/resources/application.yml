@@ -1,0 +1,18 @@
+server:
+  port: 8802
+  servlet:
+    jsp:
+      init-parameters:
+        development: true
+#数据源的配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bzmall?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#mybatis-plus
+mybatis-plus:
+  mapper-locations: classpath:mapper/*Mapper.xml

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.baizhi</groupId>
+    <artifactId>bzmall</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <description>父级项目,用来统一项目的所有以来的版本</description>
+<!--    父项目中声明子项目-->
+    <modules>
+        <module>bzmall-dao</module>
+        <module>bzmall-common</module>
+        <module>bzmall-admin</module>
+        <module>bzmall-generator</module>
+    </modules>
+    <!--    父项目 打包类型必须是pom-->
+    <packaging>pom</packaging>
+
+    <!--    properties 公共配置区域
+        配置项目的编译版本
+        编码集
+        依赖的版本号等
+    -->
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!--        lombok-version 这个标签是自定义的可以随便写-->
+        <lombok-version>1.18.4</lombok-version>
+        <spring-boot-version>2.2.3.RELEASE</spring-boot-version>
+        <mybatisplus-version>3.3.2</mybatisplus-version>
+        <druid-version>1.0.19</druid-version>
+        <mysql-version>5.1.38</mysql-version>
+        <hutool-version>5.3.10</hutool-version>
+    </properties>
+
+<!--    依赖
+        dependencies 中配置的所有依赖 会被子项目继承到 并且会下载到子项目中
+        打包的时候 也会一块儿打包
+-->
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+<!--            ${lombok-version} 获取properties中的版本号-->
+            <version>${lombok-version}</version>
+        </dependency>
+
+        <!--        hutool 糊涂工具类-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool-version}</version>
+        </dependency>
+    </dependencies>
+
+<!--    dependencyManagement 为了声明依赖的版本
+       其中配置的所有的jar包 不会被子项目直接继承到  也就是说不会下载到子项目中
+
+       怎么用?
+           子项目中导入依赖 如果要导入的依赖在dependencyManagement 中有
+           可以不写版本号
+-->
+    <dependencyManagement>
+        <dependencies>
+            <!--
+            Springboot 2.2.3 相当于继承了Springboot的父项目
+                从此以后导入SpringBoot相关依赖不需要再写版本号
+                            -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.2.3.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--            MybatisPlus-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisplus-version}</version>
+            </dependency>
+
+            <!--            数据源-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid-version}</version>
+            </dependency>
+
+            <!--            mysql-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-version}</version>
+            </dependency>
+
+            <!--            sql性能分析插件 MybatisPlus-->
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>3.8.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
