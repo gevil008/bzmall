@@ -1,22 +1,21 @@
-package com.baizhi.dao;
+package com.baizhi.service;
 
 import com.baizhi.entity.BzMenu;
 import com.baizhi.vo.ZTreeNode;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
 /**
  * <p>
- * 菜单管理 Mapper 接口
+ * 菜单管理 服务类
  * </p>
  *
  * @author lby
  * @since 2020-11-23
  */
-public interface BzMenuMapper extends BaseMapper<BzMenu> {
+public interface BzMenuService extends IService<BzMenu> {
     List<BzMenu> selectMenusbySql();
 
-    // 直接将菜单数据封装到ZtreeNode中
     List<ZTreeNode> selectMenusbyZtree();
 }

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.BzMenuMapper">
+
+    <resultMap id="menuSqlLevel" type="com.baizhi.entity.BzMenu">
+        <id column="menuId1" property="menuId"></id>
+        <result column="name1" property="name"></result>
+        <collection property="menuList" ofType="com.baizhi.entity.BzMenu">
+            <id column="menuId2" property="menuId"></id>
+            <result column="parentId2" property="parentId"></result>
+            <result column="name2" property="name"></result>
+            <result column="url2" property="url"></result>
+            <collection property="menuList" ofType="com.baizhi.entity.BzMenu">
+                <id column="menuId3" property="menuId"></id>
+                <result column="parentId3" property="parentId"></result>
+                <result column="name3" property="name"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <resultMap id="menuZtree" type="com.baizhi.vo.ZTreeNode">
+        <id column="menuId1" property="id"></id>
+        <result column="name1" property="name"></result>
+        <collection property="children" ofType="com.baizhi.vo.ZTreeNode">
+            <id column="menuId2" property="id"></id>
+            <result column="name2" property="name"></result>
+            <collection property="children" ofType="com.baizhi.vo.ZTreeNode">
+                <id column="menuId3" property="id"></id>
+                <result column="name3" property="name"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectMenusbySql" resultMap="menuSqlLevel">
+        SELECT t3.*,
+               t4.menu_id   menuId3,
+               t4.parent_id parentId3,
+               t4.name      name3
+        FROM (
+             SELECT t1.menu_id   menuId1,
+                    t1.name      name1,
+                    t2.menu_id   menuId2,
+                    t2.parent_id parentId2,
+                    t2.name      name2,
+                    t2.url       url2
+             FROM (SELECT * FROM bz_menu WHERE type = 0) t1
+                      LEFT JOIN bz_menu t2 ON t1.menu_id = t2.parent_id
+         ) t3
+             LEFT JOIN bz_menu t4 ON t3.menuId2 = t4.parent_id
+    </select>
+
+    <select id="selectMenusbyZtree" resultMap="menuZtree">
+        SELECT t3.*,
+               t4.menu_id   menuId3,
+               t4.parent_id parentId3,
+               t4.name      name3
+        FROM (
+             SELECT t1.menu_id   menuId1,
+                    t1.name      name1,
+                    t2.menu_id   menuId2,
+                    t2.parent_id parentId2,
+                    t2.name      name2,
+                    t2.url       url2
+             FROM (SELECT * FROM bz_menu WHERE type = 0) t1
+                      LEFT JOIN bz_menu t2 ON t1.menu_id = t2.parent_id
+         ) t3
+             LEFT JOIN bz_menu t4 ON t3.menuId2 = t4.parent_id
+    </select>
+</mapper>

@@ -35,7 +35,7 @@
 	            <input class="layui-input" type="text" name="code" autocomplete="off" placeholder="验证码" lay-verify="required">
 	            <div onclick="addPic()" >
 
-					<img id="addPic"  class="captcha-img" src="${pageContext.request.contextPath}/getCaptcha" />
+					<img id="addPic"  class="captcha-img" src="${pageContext.request.contextPath}/admin/getCaptcha" />
 
 				</div>
 	        </div>
@@ -47,7 +47,7 @@
 	<script>
 		function addPic() {
 			// 修改图片的src属性  在url后拼接随机数
-			$("#addPic").prop("src","${pageContext.request.contextPath}/getCaptcha?hh="+Math.random())
+			$("#addPic").prop("src","${pageContext.request.contextPath}/admin/getCaptcha?hh="+Math.random())
 		}
         layui.use('form',function () {
             // 操作对象
@@ -57,7 +57,7 @@
             form.on('submit(login)',function (data) {
                 // console.log(data.field);
                 $.ajax({
-                    url:"/login/"+data.field.code,
+                    url:"${pageContext.request.contextPath}/admin/login/"+data.field.code,
                     data:JSON.stringify(data.field),
                     type:"POST",
                     contentType:"application/json",

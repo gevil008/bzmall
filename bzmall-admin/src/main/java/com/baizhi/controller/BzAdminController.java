@@ -23,6 +23,7 @@ import java.util.Map;
  * @since 2020-11-23
  */
 @RestController
+@RequestMapping("admin")
 public class BzAdminController {
 
     @Autowired
