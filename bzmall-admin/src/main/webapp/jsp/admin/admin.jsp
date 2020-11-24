@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>管理员列表</title>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/layui/css/layui.css">
+	<script type="text/javascript" src="${pageContext.request.contextPath}/layui/layui.js"></script>
 </head>
 <body>
 	<h2>管理员</h2>
