@@ -47,7 +47,7 @@ public class CodeGenerator {
         String projectPath = System.getProperty("user.dir");
 //        配置代码生成的位置
         gc.setOutputDir(projectPath + "/bzmall-generator/src/main/java");
-        gc.setAuthor("lby");
+        gc.setAuthor("caoyafei");
         gc.setOpen(false);
         // gc.setSwagger2(true); 实体属性 Swagger2 注解
         mpg.setGlobalConfig(gc);

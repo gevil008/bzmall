@@ -3,8 +3,11 @@ package com.baizhi;
 import com.baizhi.entity.BzAdmin;
 import com.baizhi.service.BzAdminService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class ServiceTests extends AppRunTests{
     @Autowired
@@ -27,6 +30,16 @@ public class ServiceTests extends AppRunTests{
             System.err.println("用户名或者密码错误");
             return;
         }
+    }
+
+    @Test
+    public void testShowPage(){
+        Page<BzAdmin> page = new Page<>(1,5);
+        Page<BzAdmin> page1 = adminService.page(page);
+        List<BzAdmin> records = page1.getRecords();
+        records.forEach(System.err::println);
+        long total = page1.getTotal();
+        System.err.println(total);
 
     }
 }
