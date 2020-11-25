@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>品牌管理</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/layui/css/layui.css"/>
     <script type="text/javascript" src="${pageContext.request.contextPath}/layui/layui.js"></script>
@@ -22,6 +22,8 @@
                 {type:"checkbox"},//1 显示复选框
                 {title:"品牌ID",field:"brandId",sort:true},
                 {title:"名称",field:"name"},
+                {title:"首字母",field:"firstLetter"},
+                {title:"排名",field:"sort"},
                 {title:"品牌logo",field:"logo",templet:function (d) {
                         return "<img src='${pageContext.request.contextPath}/img/"+d.logo+"' width='70px'/>";
                     }},
@@ -103,12 +105,18 @@
         <div class="layui-form-item">
             <label class="layui-form-label">品牌名称</label>
             <div class="layui-input-block" style="width:200px">
-                <input type="text" name="name" required  lay-verify="required" placeholder="请输入书名" autocomplete="off" class="layui-input">
+                <input type="text" name="name" required  lay-verify="required" placeholder="品牌名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">品牌排名</label>
+            <div class="layui-input-block" style="width:200px">
+                <input type="text" name="sort" required  lay-verify="required" placeholder="请输入名次" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">品牌logo</label>
-            <input type="hidden" name="cover" id="cover" lay-verify="file">
+            <input type="hidden" name="logo" id="cover" lay-verify="file">
             <div class="layui-input-block" style="width:200px">
                 <button type="button" class="layui-btn uploadfile">
                     <i class="layui-icon layui-icon-upload"></i>上传图片
@@ -116,10 +124,10 @@
             </div>
         </div>
 
-        <div class="layui-form-item">
+        <div class="layui-form-item" >
             <label class="layui-form-label">描述</label>
             <div class="layui-input-block" style="width:200px">
-                <input type="text" name="brandStory" required  lay-verify="number" placeholder="请输入价格" autocomplete="off" class="layui-input">
+                    <textarea name="brandStory" placeholder="请输入内容" class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
@@ -157,7 +165,7 @@
                     //在弹出层弹出成功后调用
 
                     // 上传图片的展示设置
-                    $("#coverimgdiv").css({"width":"250px","height":"260px","position":"absolute","z-index":"103","right":"20px","top":"40px","border":"solid 1px red"});
+                    $("#coverimgdiv").css({"width":"250px","height":"240px","position":"absolute","z-index":"103","right":"20px","top":"20px","border":"solid 1px red"});
                     $("#coverimg2").css({"margin-top":"40%","margin-left":"35%","position":"absolute","z-index":"101","font-size":"20px","color":"red"});
 
                     /*// 手动渲染单选按钮
@@ -189,8 +197,8 @@
                         done: function(res){
                             //上传完毕回调
                             $("#cover").val(res.path);
-                            $("#coverimg").prop("src","../img/"+res.path);
-                            $("#coverimg").css({"width":"250px","height":"260px","position":"absolute","z-index":"102"})
+                            $("#coverimg").prop("src","${pageContext.request.contextPath}/img/"+res.path);
+                            $("#coverimg").css({"width":"250px","height":"240px","position":"absolute","z-index":"102"})
                         },
                         // 上传文件异常
                         error: function(){
@@ -210,7 +218,7 @@
                             success:function(result){
                                 if (result.status == "success") {
                                     layer.close(index);
-                                    table.reload("book");
+                                    table.reload("brand");
                                 }else{
                                     alert("服务器繁忙：添加失败");
                                 }
@@ -252,33 +260,21 @@
 <script id="updateForm" type="text/html">
     <form class="layui-form" action="" lay-filter="updateForm" style="z-index: 100">
         <div class="layui-form-item">
-            <label class="layui-form-label">书名</label>
+            <label class="layui-form-label">品牌名称</label>
             <div class="layui-input-block" style="width:200px">
-                <input type="hidden" name="id">
-                <input type="text" name="name" required  lay-verify="required" placeholder="请输入书名" autocomplete="off" class="layui-input">
+                <input type="hidden" name="brandId">
+                <input type="text" name="name" required  lay-verify="required" placeholder="品牌名称" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">作者</label>
+            <label class="layui-form-label">品牌排名</label>
             <div class="layui-input-block" style="width:200px">
-                <input type="text" name="author" required  lay-verify="required" placeholder="请输入作者" autocomplete="off" class="layui-input">
+                <input type="text" name="sort" required  lay-verify="required" placeholder="请输入名次" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">出版社</label>
-            <div class="layui-input-block" style="width:200px">
-                <input type="text" name="press" required  lay-verify="required" placeholder="请输入出版社" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">出版日期</label>
-            <div class="layui-input-block" style="width:200px">
-                <input type="text" class="layui-input" lay-verify="date" id="publishedDate2" name="publishedDate">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">封面</label>
-            <input type="hidden" name="cover" id="cover2" lay-verify="file">
+            <label class="layui-form-label">品牌logo</label>
+            <input type="hidden" name="logo" id="cover2" lay-verify="file">
             <div class="layui-input-block" style="width:200px">
                 <button type="button" class="layui-btn uploadfile">
                     <i class="layui-icon layui-icon-upload"></i>上传图片
@@ -286,10 +282,10 @@
             </div>
         </div>
 
-        <div class="layui-form-item">
-            <label class="layui-form-label">价格</label>
+        <div class="layui-form-item" >
+            <label class="layui-form-label">描述</label>
             <div class="layui-input-block" style="width:200px">
-                <input type="text" name="price" required  lay-verify="number" placeholder="请输入价格" autocomplete="off" class="layui-input">
+                <textarea name="brandStory" placeholder="请输入内容" class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
@@ -328,25 +324,25 @@
                     success:function(layerObj,index){
 
                         // 上传图片的展示位置样式设置
-                        $("#coverimgdiv2").css({"width":"250px","height":"260px","position":"absolute","z-index":"103","right":"20px","top":"40px","border":"solid 1px red"});
+                        $("#coverimgdiv2").css({"width":"250px","height":"250px","position":"absolute","z-index":"103","right":"20px","top":"10px","border":"solid 1px red"});
 
                         //手动渲染更新表单中单选按钮和日期组件
                         // form.render("radio","updateForm");
-                        laydate.render({
+                       /* laydate.render({
                             elem:"#publishedDate2",
                             type:"date",//控件选择类型 year month date time datetime
                             format:"yyyy-MM-dd",//日期格式
                             value:new Date(),//初始值
                             trigger: 'click'//触发方式
-                        })
+                        })*/
 
                         //回显表单数据
                         console.log(obj.data);//要更新的那行的原始数据
                         form.val("updateForm",obj.data);
 
                         // 图片回显设置
-                        $("#coverimg3").prop("src","../img/"+$("#cover2").val());
-                        $("#coverimg3").css({"width":"250px","height":"260px","position":"absolute","z-index":"102"})
+                        $("#coverimg3").prop("src","${pageContext.request.contextPath}/img/"+$("#cover2").val());
+                        $("#coverimg3").css({"width":"250px","height":"250px","position":"absolute","z-index":"102"})
 
 
                         // 文件手动校验
@@ -363,13 +359,13 @@
                         // 上传文件
                         upload.render({
                             elem: '.uploadfile', //绑定元素
-                            url: '/Layui-day02/file/upload', //上传接口
+                            url: '/file/upload', //上传接口
                             field: "pic",//设置上传的参数名
                             done: function(res){
                                 //上传完毕回调
                                 $("#cover2").val(res.path);
                                 file = $("#cover2").val();
-                                $("#coverimg3").prop("src","../img/"+res.path);
+                                $("#coverimg3").prop("src","${pageContext.request.contextPath}/img/"+res.path);
                             },
                             // 上传文件异常
                             error: function(){
@@ -383,7 +379,7 @@
                             //当更新表单,提交数据的时候,执行当前行数 data.field获取到更新表单最新的数据
                             console.log(data.field);
                             $.ajax({
-                                url:"/Layui-day02/books",
+                                url:"/brand/brands",
                                 type:"put",
                                 data:JSON.stringify(data.field),
                                 contentType:"application/json",
@@ -392,7 +388,7 @@
                                     //如果更新成功,关闭弹出层,刷新表格
                                     if (result.status == "success") {
                                         layer.close(index);
-                                        table.reload("book");
+                                        table.reload("brand");
                                     }else{
                                         alert("服务器繁忙：更新失败");
                                     }
@@ -401,7 +397,7 @@
                             // 同时从磁盘中删除照片
                             console.log(obj.data.cover);
                             $.ajax({
-                                url:"/Layui-day02/file/remove",
+                                url:"/file/remove",
                                 data:"file="+obj.data.cover,
                                 dataType:"json",
                                 type:"post"
@@ -415,7 +411,7 @@
                             // 如果选择过图片后取消则删除选择的图片
                             if (file!=null){
                                 $.ajax({
-                                    url:"/Layui-day02/file/remove",
+                                    url:"/file/remove",
                                     data:"file="+file,
                                     type:"post",
                                     dataType:"json"
@@ -438,18 +434,18 @@
                         // console.log("确定按钮");
                         // 从数据库中删除信息
                         $.ajax({
-                            url:"/Layui-day02/books/"+obj.data.id,
+                            url:"/brand/brands/"+obj.data.brandId,
                             dataType:"json",
                             type:"DELETE",
                             success:function (result) {
                                 // console.log(result);
                                 layer.close(index);
-                                table.reload("book");
+                                table.reload("brand");
                             }
                         });
                         // 同时从磁盘中删除照片
                         $.ajax({
-                            url:"/Layui-day02/file/remove",
+                            url:"/file/remove",
                             data:"file="+obj.data.cover,
                             dataType:"json",
                             type:"post"
@@ -473,8 +469,8 @@
             var $ = layui.jquery;
             var search = $("#search").val();
             //2 根据条件重新加载表格
-            table.reload("book",{
-                url:"/Layui-day02/books",
+            table.reload("brand",{
+                url:"/brand/brands",
                 where:{
                     "search":search,
                     "page":1

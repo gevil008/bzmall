@@ -3,6 +3,7 @@ package com.baizhi.controller;
 
 import com.baizhi.entity.PmsBrand;
 import com.baizhi.service.PmsBrandService;
+import com.baizhi.util.PinYinUpperCase;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class PmsBrandController {
             queryWrapper.like("username",search);
             sectionPage = pmsBrandService.page(new Page<>(page,limit),queryWrapper);
         } else {
-            queryWrapper.eq("show_status",0);
+            queryWrapper.eq("show_status",0).orderByAsc("sort");
             sectionPage = pmsBrandService.page(new Page<>(page,limit),queryWrapper);
         }
         long total = sectionPage.getTotal();
@@ -71,6 +72,14 @@ public class PmsBrandController {
     public Map addOne(@RequestBody PmsBrand pmsBrand){
         System.err.println(pmsBrand);
         Map map = new HashMap();
+        /**
+         * PinYinUpperCase.getPinYinUpperCase(String)
+         * 获取文字的拼音首字母
+         */
+        pmsBrand.setFirstLetter(PinYinUpperCase.getPinYinUpperCase(pmsBrand.getName()));
+        pmsBrand.setShowStatus(0);
+        System.err.println(pmsBrand);
+
         boolean save = pmsBrandService.save(pmsBrand);
         System.err.println(save);
         if (save){

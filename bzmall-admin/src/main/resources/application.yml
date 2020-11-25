@@ -12,9 +12,19 @@ spring:
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
+  servlet:
+    multipart:
+      max-file-size: 5MB #单个文件最多上传的文件大小
+      max-request-size: 10MB #一次请求最多上传的文件大小
 
 #mybatis-plus
 mybatis-plus:
+  type-aliases-package: com.baizhi.entity
   mapper-locations: classpath:mappers/*Mapper.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #定义全局的删除策略
+  global-config:
+    db-config:
+      logic-not-delete-value: 0
+      logic-delete-value: 1

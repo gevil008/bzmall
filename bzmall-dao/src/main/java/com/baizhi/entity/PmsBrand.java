@@ -2,6 +2,7 @@ package com.baizhi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,8 +44,10 @@ public class PmsBrand implements Serializable {
     private Integer sort;
 
     /**
-     * 是否显示[0-不显示；1-显示]
+     * 是否显示[0-显示；1-不显示]
      */
+
+    @TableLogic
     private Integer showStatus;
 
     /**

@@ -14,6 +14,7 @@
         <module>bzmall-common</module>
         <module>bzmall-admin</module>
         <module>bzmall-generator</module>
+        <module>bzmall-api</module>
     </modules>
     <!--    父项目 打包类型必须是pom-->
     <packaging>pom</packaging>
