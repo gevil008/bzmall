@@ -2,6 +2,8 @@ package com.baizhi;
 
 import com.baizhi.entity.BzAdmin;
 import com.baizhi.service.BzAdminService;
+import com.baizhi.service.PmsCategoryService;
+import com.baizhi.vo.ZTreeNode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.junit.Test;
@@ -12,6 +14,9 @@ import java.util.List;
 public class ServiceTests extends AppRunTests{
     @Autowired
     private BzAdminService adminService;
+
+    @Autowired
+    private PmsCategoryService pmsCategoryService;
 
     @Test
     public void test1(){
@@ -40,6 +45,13 @@ public class ServiceTests extends AppRunTests{
         records.forEach(System.err::println);
         long total = page1.getTotal();
         System.err.println(total);
+
+    }
+
+    @Test
+    public void test3(){
+        List<ZTreeNode> nodes = pmsCategoryService.selectCategoryByZtree();
+        nodes.forEach(System.err::println);
 
     }
 }

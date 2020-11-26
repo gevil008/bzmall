@@ -1,7 +1,7 @@
 package com.baizhi.service.impl;
 
-import com.baizhi.entity.PmsBrand;
 import com.baizhi.dao.PmsBrandMapper;
+import com.baizhi.entity.PmsBrand;
 import com.baizhi.service.PmsBrandService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

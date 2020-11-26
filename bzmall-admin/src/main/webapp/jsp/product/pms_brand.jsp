@@ -43,6 +43,8 @@
 <script type="text/html" id="toolbar">
     <button onclick="handleRemoveAny()" class="layui-btn layui-btn-primary">删除选中<i class="layui-icon layui-icon-delete"/> </button>
     <button onclick="openAddForm()" class="layui-btn layui-btn-danger">添加<i class="layui-icon layui-icon-addition"></i></button>
+    <button onclick="openBatchAddForm()" class="layui-btn layui-btn-danger">批量添加<i class="layui-icon layui-icon-addition"></i></button>
+    <button onclick="batchDownload()" class="layui-btn layui-btn-danger">批量下载<i class="layui-icon layui-icon-addition"></i></button>
     <!-- 1 显示搜索表单 -->
     <div class="layui-inline">
         <form action="" class="layui-form">
@@ -55,6 +57,7 @@
         </form>
     </div>
 </script>
+
 
 <!--删除选中实现-->
 <script type="text/javascript">
@@ -141,6 +144,68 @@
             <div id="coverimg2" class="uploadfile">上传图片</div>
         </div>
     </form>
+</script>
+
+<script id="BatchAddForm" type="text/html">
+    <form action="" class="layui-form">
+        <div class="layui-form-item" align="center">
+            <button type="button" class="layui-btn" id="test1">
+                <i class="layui-icon layui-icon-upload"></i>批量上传
+            </button>
+            <span id="xlsxFile"></span>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" lay-submit lay-filter="go" class="layui-btn" id="batchAdd-submit-btn">添加</button>
+                <button type="button" class="layui-btn" id="batchAdd-form-cancel">取消</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/javascript">
+    function openBatchAddForm() {
+        layui.use(["layer","form","upload","table"],function () {
+            var layer = layui.layer;
+            var $ = layui.jquery;
+            var form = layui.form;
+            var upload = layui.upload;
+            var table = layui.table;
+
+            layer.open({
+                type:1,
+                content:$("#BatchAddForm").html(),
+                area:"300px",
+                title:"批量添加",
+                success:function (layerobj,index) {
+                    upload.render({
+
+                        elem:'#test1',
+                        url:'/file/batchUpload',
+                        field:'xlsxfile',
+                        accept: "file",
+                        exts:"xlsx",
+                        auto: false,
+                        bindAction:"#batchAdd-submit-btn",
+                        done:function (res) {
+                            alert("上传成功");
+                            console.log(res);
+                            layer.close(index);
+                            table.reload("brand");
+                        },
+                        error:function () {
+                            alert("上传文件类型不支持")
+                        }
+                    })
+                    // 取消添加按钮
+                    $("#batchAdd-form-cancel").click(function () {
+                        layer.close(index);
+                    });
+                }
+
+            })
+        })
+    }
 </script>
 
 <!--添加实现代码-->
