@@ -9,19 +9,14 @@ import com.baizhi.entity.PmsBrand;
 import com.baizhi.service.PmsBrandService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = BzMallApplication.class)
-public class EasyPoiTest {
+public class EasyPoiTest extends AppRunTests{
 
     @Autowired
     private PmsBrandService pmsBrandService;
