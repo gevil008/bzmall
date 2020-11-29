@@ -2,16 +2,17 @@ package com.baizhi.controller;
 
 
 import com.baizhi.entity.PmsBrand;
+import com.baizhi.enums.LogTypeEnum;
+import com.baizhi.log.LogAnnotation;
 import com.baizhi.service.PmsBrandService;
 import com.baizhi.util.PinYinUpperCase;
+import com.baizhi.vo.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -29,90 +30,79 @@ public class PmsBrandController {
     private PmsBrandService pmsBrandService;
 
     @GetMapping("/brands")
-    public Map showPage(@RequestParam(defaultValue = "1")Integer page,
-                        @RequestParam(defaultValue = "5")Integer limit,
-                        String search){
-        System.err.println(page);
-        System.err.println(limit);
+    @LogAnnotation(content = "商品系统-品牌管理查询")
+    public R showPage(@RequestParam(defaultValue = "1")Integer page,
+                      @RequestParam(defaultValue = "5")Integer limit,
+                      String search){
         Page<PmsBrand> sectionPage = null;
         QueryWrapper<PmsBrand> queryWrapper = new QueryWrapper();
         if (search != null){
             queryWrapper.like("username",search);
             sectionPage = pmsBrandService.page(new Page<>(page,limit),queryWrapper);
         } else {
-            queryWrapper.eq("show_status",0).orderByAsc("sort");
+            queryWrapper.orderByAsc("sort");
             sectionPage = pmsBrandService.page(new Page<>(page,limit),queryWrapper);
         }
         long total = sectionPage.getTotal();
         List<PmsBrand> records = sectionPage.getRecords();
-
-        Map map = new HashMap();
-        map.put("data",records);
-        map.put("count",total);
-        map.put("code",0);
-
-        return map;
+        return R.ok().put("data",records).put("count",total).put("code",0);
     }
 
     @DeleteMapping("/brands/{id}")
-    public Map deleteOne(@PathVariable("id")Integer id){
-        System.err.println(id);
-        Map map = new HashMap();
+    @LogAnnotation(type = LogTypeEnum.DELETE,content = "商品系统-品牌管理删除单条商品")
+    public R deleteOne(@PathVariable("id")Integer id){
         try {
             pmsBrandService.removeById(id);
-            map.put("status","success");
         } catch (Exception e) {
-            map.put("status","error");
             e.printStackTrace();
+            return R.error().put("status","error");
         }
-        return map;
+        return R.ok().put("status","success");
     }
 
     @PostMapping("/brands")
-    public Map addOne(@RequestBody PmsBrand pmsBrand){
-        System.err.println(pmsBrand);
-        Map map = new HashMap();
+    @LogAnnotation(type = LogTypeEnum.ADD,content = "商品系统-品牌管理添加一个商品")
+    public R addOne(@RequestBody PmsBrand pmsBrand){
         /**
          * PinYinUpperCase.getPinYinUpperCase(String)
          * 获取文字的拼音首字母
          */
         pmsBrand.setFirstLetter(PinYinUpperCase.getPinYinUpperCase(pmsBrand.getName()));
-        pmsBrand.setShowStatus(0);
-        System.err.println(pmsBrand);
-
-        boolean save = pmsBrandService.save(pmsBrand);
-        System.err.println(save);
-        if (save){
-            map.put("status","success");
+        if (pmsBrandService.save(pmsBrand)){
+            return R.ok().put("status","success");
         } else {
-            map.put("status","error");
+            return R.error().put("status","error");
         }
-        return map;
     }
 
     @DeleteMapping("/brands")
-    public Map deleteMay(@RequestBody List<Integer> ids){
-        ids.forEach(System.err::println);
-        boolean b = pmsBrandService.removeByIds(ids);
-        Map map = new HashMap();
-        if (b){
-            map.put("status","success");
+    @LogAnnotation(type = LogTypeEnum.DELETE,content = "商品系统-品牌管理删除多条商品")
+    public R deleteMay(@RequestBody List<Integer> ids){
+        if (pmsBrandService.removeByIds(ids)){
+            return R.ok().put("status","success");
         } else {
-            map.put("status","error");
+            return R.error().put("status","error");
         }
-        return map;
     }
 
     @PutMapping("/brands")
-    public Map updateOne(@RequestBody PmsBrand pmsBrand){
-        System.err.println(pmsBrand);
-        boolean b = pmsBrandService.updateById(pmsBrand);
-        Map map = new HashMap();
-        if (b){
-            map.put("status","success");
+    @LogAnnotation(type = LogTypeEnum.UPDATE,content = "商品系统-品牌管理修改单个商品")
+    public R updateOne(@RequestBody PmsBrand pmsBrand){
+        pmsBrand.setFirstLetter(PinYinUpperCase.getPinYinUpperCase(pmsBrand.getName()));
+        if (pmsBrandService.updateById(pmsBrand)){
+            return R.ok().put("status","success");
         } else {
-            map.put("status","error");
+            return R.error().put("status","error");
         }
-        return map;
+    }
+    @PutMapping("/brands/{brandId}/{statusId}")
+    public R updateStatus(@PathVariable("brandId") Integer brandId,@PathVariable("statusId")Integer statusId){
+        try {
+            pmsBrandService.updateShowStatus(brandId,statusId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error().put("status","error");
+        }
+        return R.ok().put("status","success");
     }
 }

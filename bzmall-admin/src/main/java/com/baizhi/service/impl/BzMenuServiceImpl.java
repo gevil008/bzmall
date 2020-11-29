@@ -2,6 +2,7 @@ package com.baizhi.service.impl;
 
 import com.baizhi.entity.BzMenu;
 import com.baizhi.dao.BzMenuMapper;
+import com.baizhi.log.LogAnnotation;
 import com.baizhi.service.BzMenuService;
 import com.baizhi.vo.ZTreeNode;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,6 +26,7 @@ public class BzMenuServiceImpl extends ServiceImpl<BzMenuMapper, BzMenu> impleme
     @Autowired
     private BzMenuMapper bzMenuMapper;
 
+    @LogAnnotation(content = "查询菜单数据")
     @Override
     public List<BzMenu> selectMenusbySql() {
         return bzMenuMapper.selectMenusbySql();
@@ -40,6 +42,7 @@ public class BzMenuServiceImpl extends ServiceImpl<BzMenuMapper, BzMenu> impleme
      * @return
      */
     @Override
+    @LogAnnotation(content = "查询菜单数据，通过流查询")
     public List<ZTreeNode> selectMenusbyZtree() {
         /**
          * 查询所有菜单数据

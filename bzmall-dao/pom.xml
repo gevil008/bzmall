@@ -13,7 +13,7 @@
     <artifactId>bzmall-dao</artifactId>
 
     <dependencies>
-        <!--            MybatisPlus
+        <!--MybatisPlus
           如果依赖在父项目中配置过来版本 子项目可以不写版本号
       -->
         <dependency>
@@ -21,13 +21,13 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
-        <!--            数据源-->
+        <!--数据源-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
         </dependency>
 
-        <!--            mysql-->
+        <!--mysql-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -36,6 +36,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <!--<dependency>

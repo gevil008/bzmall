@@ -13,19 +13,26 @@
 
 <!--展示所有-->
 <script type="text/javascript">
-    layui.use("table",function(){
+    layui.use(["form","table"],function(){
+        var form = layui.form;
         var table = layui.table;
+        var $ = layui.$;
         // 主页展示所有数据
         table.render({
             elem:"#brand",
             cols:[[
                 {type:"checkbox"},//1 显示复选框
                 {title:"品牌ID",field:"brandId",sort:true},
-                {title:"名称",field:"name"},
+                {title:"品牌名称",field:"name"},
                 {title:"首字母",field:"firstLetter"},
-                {title:"排名",field:"sort"},
+                {title:"排序",field:"sort"},
+                {title:"是否显示",field:"showStatus",templet:function (d) {
+                        var show = d.showStatus==1?'checked':'';
+                        return "<input type='checkbox' lay-filter='switchGoodsID' switch_goods_id='"+d.brandId+"' name='showStatus' lay-skin='switch' lay-text='显示|关闭' "+show+">";
+                    }},
+                {title:"品牌排名",field:"sort"},
                 {title:"品牌logo",field:"logo",templet:function (d) {
-                        return "<img src='${pageContext.request.contextPath}/img/"+d.logo+"' width='70px'/>";
+                        return "<img src='https://bzmall-6.oss-cn-beijing.aliyuncs.com/brand/"+d.logo+"' width='70px'/>";
                     }},
                 {title:"品牌描述",field:"brandStory"},
                 {title:"操作",toolbar:"#operation"}//操作列
@@ -35,6 +42,50 @@
             limits:[5,10,20],   //每页条数的选择项
             limit:5,            //每页显示的条数，默认：10
             toolbar:"#toolbar",  //2 显示删除按钮
+        });
+
+        form.on('switch(switchGoodsID)', function(data) {
+            //开关是否开启，true或者false
+            var checked = data.elem.checked;
+            //获取所需属性值
+            var switch_goods_id = data.elem.attributes['switch_goods_id'].nodeValue;
+            // console.log(checked);
+            // console.log(switch_goods_id);
+
+            if (!checked) {
+                // console.log("初始为开启")
+                $.ajax({
+                    url:"/brand/brands/"+switch_goods_id+"/"+0,
+                    type:"PUT",
+                    contentType:"application/json",
+                    dataType:"json",
+                    success:function(result){
+                        if(result.status == "success") {
+                            table.reload("brand");
+                        }else{
+                            alert("服务器繁忙：修改失败");
+                        }
+                    }
+
+                })
+            } else {
+                // console.log("初始为关闭")
+                $.ajax({
+                    url:"/brand/brands/"+switch_goods_id+"/"+1,
+                    type:"PUT",
+                    contentType:"application/json",
+                    dataType:"json",
+                    success:function(result){
+                        if(result.status == "success") {
+                            table.reload("brand");
+                        }else{
+                            alert("服务器繁忙：修改失败");
+                        }
+                    }
+
+                })
+            }
+            // form.render();
         });
     });
 </script>
@@ -91,7 +142,7 @@
                     dataType:"json",
                     success:function(result){
                         if(result.status == "success") {
-                            table.reload("book");
+                            table.reload("brand");
                         }else{
                             alert("服务器繁忙：删除失败！");
                         }
@@ -115,6 +166,12 @@
             <label class="layui-form-label">品牌排名</label>
             <div class="layui-input-block" style="width:200px">
                 <input type="text" name="sort" required  lay-verify="required" placeholder="请输入名次" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否显示</label>
+            <div class="layui-input-block" style="width:200px">
+                <input type="checkbox" name="showStatus" lay-skin="switch" lay-text="显示|关闭" checked>
             </div>
         </div>
         <div class="layui-form-item">
@@ -164,6 +221,11 @@
 </script>
 
 <script type="text/javascript">
+
+    function batchDownload() {
+        window.location.href="/file/BatchDownload";
+    }
+
     function openBatchAddForm() {
         layui.use(["layer","form","upload","table"],function () {
             var layer = layui.layer;
@@ -184,12 +246,11 @@
                         url:'/file/batchUpload',
                         field:'xlsxfile',
                         accept: "file",
-                        exts:"xlsx",
+                        // exts:"xlsx",
                         auto: false,
                         bindAction:"#batchAdd-submit-btn",
                         done:function (res) {
                             alert("上传成功");
-                            console.log(res);
                             layer.close(index);
                             table.reload("brand");
                         },
@@ -245,6 +306,7 @@
                         trigger: 'click'//触发方式
                     });*/
 
+                    layui.form.render('checkbox');
                     // 文件手动校验
                     form.verify({
                         file:function(value){
@@ -257,12 +319,12 @@
                     // 上传文件
                     upload.render({
                         elem: '.uploadfile', //绑定元素
-                        url: '/file/upload', //上传接口
-                        field: "pic",//设置上传的参数名
+                        url: '/oss/uploadImg', //上传接口
+                        field: "file",//设置上传的参数名
                         done: function(res){
                             //上传完毕回调
                             $("#cover").val(res.path);
-                            $("#coverimg").prop("src","${pageContext.request.contextPath}/img/"+res.path);
+                            $("#coverimg").prop("src","https://bzmall-6.oss-cn-beijing.aliyuncs.com/brand/"+res.path);
                             $("#coverimg").css({"width":"250px","height":"240px","position":"absolute","z-index":"102"})
                         },
                         // 上传文件异常
@@ -274,6 +336,11 @@
 
                     // 添加请求
                     form.on("submit(go)",function(data){
+                        if (typeof (data.field.showStatus) == "undefined"){
+                            data.field.showStatus = 0;
+                        } else {
+                            data.field.showStatus = 1;
+                        }
                         $.ajax({
                             url:"/brand/brands",
                             data:JSON.stringify(data.field),
@@ -298,7 +365,7 @@
                         var file = $("#cover").val();
                         if (file.length > 0){
                             $.ajax({
-                                url:"/file/remove",
+                                url:"/oss/removeImg",
                                 data:"file="+file,
                                 type:"post",
                                 dataType:"json",
@@ -335,6 +402,12 @@
             <label class="layui-form-label">品牌排名</label>
             <div class="layui-input-block" style="width:200px">
                 <input type="text" name="sort" required  lay-verify="required" placeholder="请输入名次" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否显示</label>
+            <div class="layui-input-block" style="width:200px">
+                <input type="checkbox" name="showStatus" lay-skin="switch" lay-text="显示|关闭" id="showStatus">
             </div>
         </div>
         <div class="layui-form-item">
@@ -403,10 +476,11 @@
 
                         //回显表单数据
                         console.log(obj.data);//要更新的那行的原始数据
+
                         form.val("updateForm",obj.data);
 
                         // 图片回显设置
-                        $("#coverimg3").prop("src","${pageContext.request.contextPath}/img/"+$("#cover2").val());
+                        $("#coverimg3").prop("src","https://bzmall-6.oss-cn-beijing.aliyuncs.com/brand/"+$("#cover2").val());
                         $("#coverimg3").css({"width":"250px","height":"250px","position":"absolute","z-index":"102"})
 
 
@@ -424,13 +498,13 @@
                         // 上传文件
                         upload.render({
                             elem: '.uploadfile', //绑定元素
-                            url: '/file/upload', //上传接口
-                            field: "pic",//设置上传的参数名
+                            url: '/oss/uploadImg', //上传接口
+                            field: "file",//设置上传的参数名
                             done: function(res){
                                 //上传完毕回调
                                 $("#cover2").val(res.path);
                                 file = $("#cover2").val();
-                                $("#coverimg3").prop("src","${pageContext.request.contextPath}/img/"+res.path);
+                                $("#coverimg3").prop("src","https://bzmall-6.oss-cn-beijing.aliyuncs.com/brand/"+res.path);
                             },
                             // 上传文件异常
                             error: function(){
@@ -443,6 +517,12 @@
                         form.on("submit(update-go)",function(data){
                             //当更新表单,提交数据的时候,执行当前行数 data.field获取到更新表单最新的数据
                             console.log(data.field);
+                            console.log(data.elem.checked)
+                            if (typeof (data.field.showStatus) == "undefined"){
+                                data.field.showStatus = 0;
+                            } else {
+                                data.field.showStatus = 1;
+                            }
                             $.ajax({
                                 url:"/brand/brands",
                                 type:"put",
@@ -462,7 +542,7 @@
                             // 同时从磁盘中删除照片
                             console.log(obj.data.cover);
                             $.ajax({
-                                url:"/file/remove",
+                                url:"/oss/removeImg",
                                 data:"file="+obj.data.cover,
                                 dataType:"json",
                                 type:"post"
@@ -476,7 +556,7 @@
                             // 如果选择过图片后取消则删除选择的图片
                             if (file!=null){
                                 $.ajax({
-                                    url:"/file/remove",
+                                    url:"/oss/removeImg",
                                     data:"file="+file,
                                     type:"post",
                                     dataType:"json"
@@ -510,7 +590,7 @@
                         });
                         // 同时从磁盘中删除照片
                         $.ajax({
-                            url:"/file/remove",
+                            url:"/oss/removeImg",
                             data:"file="+obj.data.cover,
                             dataType:"json",
                             type:"post"

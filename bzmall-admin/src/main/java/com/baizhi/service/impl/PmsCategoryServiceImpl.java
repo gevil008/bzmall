@@ -2,6 +2,7 @@ package com.baizhi.service.impl;
 
 import com.baizhi.entity.PmsCategory;
 import com.baizhi.dao.PmsCategoryMapper;
+import com.baizhi.log.LogAnnotation;
 import com.baizhi.service.PmsCategoryService;
 import com.baizhi.vo.ZTreeNode;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryMapper, PmsCategory> implements PmsCategoryService {
 
     @Override
+    @LogAnnotation(content = "通过流查询商品系统-分类维护信息")
     public List<ZTreeNode> selectCategoryByZtree() {
         /**
          * 查询所有菜单数据

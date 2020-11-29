@@ -19,7 +19,8 @@ import java.util.List;
  * @since 2020-11-23
  */
 @RestController
-@RequestMapping("menu")
+@RequestMapping("/menu")
+// @Slf4j
 public class BzMenuController {
 
     @Autowired
@@ -27,6 +28,13 @@ public class BzMenuController {
 
     @RequestMapping("/getMenuList")
     public List<BzMenu> selectMenusbySql(){
+        /*
+        // 自定义日志测试
+        String flag = "成功";
+        List<BzMenu> menus = bzMenuService.selectMenusbySql();
+        menus.forEach(System.err::println);
+        log.info("查询：{}查询到菜单数据为：{}",flag,menus);
+        return menus;*/
         return bzMenuService.selectMenusbySql();
     }
 

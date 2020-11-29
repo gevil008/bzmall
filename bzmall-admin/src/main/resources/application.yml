@@ -7,8 +7,8 @@ server:
 #数据源的配置
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bzmall?useUnicode=true&characterEncoding=UTF-8
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://localhost:3306/bzmall?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
@@ -24,7 +24,16 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   #定义全局的删除策略
-  global-config:
-    db-config:
-      logic-not-delete-value: 0
-      logic-delete-value: 1
+#  global-config:
+#    db-config:
+#      logic-not-delete-value: 0
+logging:
+  level:
+    # 配置全局日志等级 整个项目日志等级 SpringBoot项目默认info
+    root: info
+    # dao里面有mybatis的日志 怎么开启 需要配置具体包的日志等级 （局部日志等级）
+    # 具体包的日志等级 优先级 大于全局日志等级
+    # 如果全局是info dao包是 debug 在指定dao包的代码的时候 按照debug执行
+#      logic-delete-value: 1
+    com.baizhi.dao: debug
+    com.baizhi.service: debug

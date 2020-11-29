@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-11-24
  */
 public interface PmsBrandService extends IService<PmsBrand> {
-
+    void updateShowStatus(Integer brandId, Integer statusId);
 }

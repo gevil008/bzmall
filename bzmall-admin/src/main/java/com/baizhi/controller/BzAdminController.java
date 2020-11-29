@@ -4,7 +4,10 @@ package com.baizhi.controller;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import com.baizhi.entity.BzAdmin;
+import com.baizhi.enums.LogTypeEnum;
+import com.baizhi.log.LogAnnotation;
 import com.baizhi.service.BzAdminService;
+import com.baizhi.vo.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -50,28 +50,27 @@ public class BzAdminController {
     }
 
     @PostMapping("/login/{code}")
-    public Map login(@RequestBody BzAdmin bzAdmin,@PathVariable("code") String code){
-        Map map = new HashMap();
+    public R login(@RequestBody BzAdmin bzAdmin,@PathVariable("code") String code){
         if(lineCaptcha.verify(code)){
             BzAdmin one = bzAdminService.getOne(new QueryWrapper<BzAdmin>().eq("username", bzAdmin.getUsername()).eq("password", bzAdmin.getPassword()));
             if (one != null){
-                map.put("status","success");
+                return R.ok().put("status","success");
             }else {
-                map.put("status","error");
+                return R.error().put("status","error");
             }
         }else {
-            map.put("Verfystatus","Wrong");
+            return R.error().put("Verfystatus","Wrong");
         }
-        return map;
     }
 
     @GetMapping("/admins")
-    public Map showPage(@RequestParam(defaultValue = "1")Integer page,
+    @LogAnnotation(type = LogTypeEnum.SELECT,content = "查询系统管理-管理员列表")
+    public R showPage(@RequestParam(defaultValue = "1")Integer page,
                         @RequestParam(defaultValue = "5")Integer limit,
                         String search){
         System.err.println(page);
         System.err.println(limit);
-        Page<BzAdmin> sectionPage = null;
+        Page<BzAdmin> sectionPage;
         if (search != null){
             QueryWrapper<BzAdmin> queryWrapper = new QueryWrapper();
             queryWrapper.like("username",search);
@@ -81,67 +80,53 @@ public class BzAdminController {
         }
         long total = sectionPage.getTotal();
         List<BzAdmin> records = sectionPage.getRecords();
-
-        Map map = new HashMap();
-        map.put("data",records);
-        map.put("count",total);
-        map.put("code",0);
-
-        return map;
+        return R.ok().put("data",records).put("count",total).put("code",0);
     }
 
     @DeleteMapping("/admins/{id}")
-    public Map deleteOne(@PathVariable("id")Integer id){
+    @LogAnnotation(type = LogTypeEnum.DELETE,content = "删除单条管理员信息")
+    public R deleteOne(@PathVariable("id")Integer id){
         System.err.println(id);
-        Map map = new HashMap();
         try {
             bzAdminService.removeById(id);
-            map.put("status","success");
         } catch (Exception e) {
-            map.put("status","error");
             e.printStackTrace();
+            return R.error().put("status","error");
         }
-        return map;
+        return R.ok().put("status","success");
     }
 
     @PostMapping("/admins")
-    public Map addOne(@RequestBody BzAdmin bzAdmin){
+    @LogAnnotation(type = LogTypeEnum.ADD,content = "添加管理员用户")
+    public R addOne(@RequestBody BzAdmin bzAdmin){
         System.err.println(bzAdmin);
-        Map map = new HashMap();
-        boolean save = bzAdminService.save(bzAdmin);
-        System.err.println(save);
-        if (save){
-            map.put("status","success");
+        if (bzAdminService.save(bzAdmin)){
+            return R.ok().put("status","success");
         } else {
-            map.put("status","error");
+            return R.error().put("status","error");
         }
-        return map;
     }
 
     @DeleteMapping("/admins")
-    public Map deleteMay(@RequestBody List<Integer> ids){
+    @LogAnnotation(type = LogTypeEnum.DELETE,content = "批量删除管理员用户")
+    public R deleteMay(@RequestBody List<Integer> ids){
         ids.forEach(System.err::println);
-        boolean b = bzAdminService.removeByIds(ids);
-        Map map = new HashMap();
-        if (b){
-            map.put("status","success");
+        if (bzAdminService.removeByIds(ids)){
+            return R.ok().put("status","success");
         } else {
-            map.put("status","error");
+            return R.error().put("status","error");
         }
-        return map;
     }
 
     @PutMapping("/admins")
-    public Map updateOne(@RequestBody BzAdmin bzAdmin){
+    @LogAnnotation(type = LogTypeEnum.UPDATE,content = "修改管理员用户信息")
+    public R updateOne(@RequestBody BzAdmin bzAdmin){
         System.err.println(bzAdmin);
-        boolean b = bzAdminService.updateById(bzAdmin);
-        Map map = new HashMap();
-        if (b){
-            map.put("status","success");
+        if (bzAdminService.updateById(bzAdmin)){
+            return R.ok().put("status","success");
         } else {
-            map.put("status","error");
+            return R.error().put("status","error");
         }
-        return map;
     }
 
 }

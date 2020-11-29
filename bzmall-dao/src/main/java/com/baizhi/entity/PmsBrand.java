@@ -61,8 +61,7 @@ public class PmsBrand implements Serializable {
     @Excel(name = "品牌logo",
             type = 2,
             width = 40,
-            imageType = 1,
-            savePath = "E:\\IdeaWorke-space\\bzmall\\bzmall-admin\\src\\main\\webapp\\img\\")
+            imageType = 1)
     private String logo;
 
     /**
