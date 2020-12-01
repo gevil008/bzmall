@@ -2,6 +2,7 @@ package com.baizhi;
 
 import com.baizhi.entity.BzAdmin;
 import com.baizhi.service.BzAdminService;
+import com.baizhi.service.BzRoleService;
 import com.baizhi.service.PmsCategoryService;
 import com.baizhi.vo.ZTreeNode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Set;
 
 public class ServiceTests extends AppRunTests{
     @Autowired
@@ -17,6 +19,9 @@ public class ServiceTests extends AppRunTests{
 
     @Autowired
     private PmsCategoryService pmsCategoryService;
+
+    @Autowired
+    private BzRoleService bzRoleService;
 
     @Test
     public void test1(){
@@ -52,6 +57,19 @@ public class ServiceTests extends AppRunTests{
     public void test3(){
         List<ZTreeNode> nodes = pmsCategoryService.selectCategoryByZtree();
         nodes.forEach(System.err::println);
+    }
 
+    @Test
+    public void test4(){
+        boolean b = adminService.addBzAdmin(new BzAdmin(null, "aaa", "123456"));
+        System.err.println(b);
+    }
+
+    @Test
+    public void test5(){
+        Set<String> set = bzRoleService.getRolesByUsername("zhangsan");
+        System.err.println(set);
+        Set<String> lisi = bzRoleService.getPermissionsByUsername("zhangsan");
+        System.err.println(lisi);
     }
 }

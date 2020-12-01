@@ -7,7 +7,9 @@ public enum ExceptionCodeEnum {
      * 可以使用 无参或者有参构造
      */
     ORDER_FAIL(1002,"订单失败"),
-    VALID_FAIL(1001,"参数校验失败");
+    VALID_FAIL(1001,"参数校验失败"),
+    VERIFICATION_FAIL(1003,"验证码错误"),
+    NOUSER_FAIL(1004,"用户不存在");
 
     /**
      * 枚举的参数
@@ -28,6 +30,7 @@ public enum ExceptionCodeEnum {
         this.code = code;
         this.msg = msg;
     }
+
 
     public int getCode() {
         return code;

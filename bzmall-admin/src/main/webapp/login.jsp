@@ -32,7 +32,7 @@
 
 	        <div class="layui-form-item captcha-item">
 	            <label class="layui-icon layui-icon-vercode"></label>
-	            <input class="layui-input" type="text" name="code" autocomplete="off" placeholder="验证码" lay-verify="required">
+	            <input class="layui-input" type="text" name="code" autocomplete="off" placeholder="验证码" lay-verify="required" id="code">
 	            <div onclick="addPic()" >
 
 					<img id="addPic"  class="captcha-img" src="${pageContext.request.contextPath}/admin/getCaptcha" />
@@ -44,7 +44,7 @@
 	</div>
 	</body>
 
-	<script>
+	<script type="text/javascript">
 		function addPic() {
 			// 修改图片的src属性  在url后拼接随机数
 			$("#addPic").prop("src","${pageContext.request.contextPath}/admin/getCaptcha?hh="+Math.random())
@@ -55,26 +55,22 @@
             var $ = layui.$;
 
             form.on('submit(login)',function (data) {
-                // console.log(data.field);
                 $.ajax({
-                    url:"${pageContext.request.contextPath}/admin/login/"+data.field.code,
-                    data:JSON.stringify(data.field),
+                    url:"${pageContext.request.contextPath}/login",
+                    data:data.field,
                     type:"POST",
-                    contentType:"application/json",
+                    // contentType:"application/json",
                     dataType:"json",
                     success:function (result) {
-                        if (result.status == 'success'){
+                        if (result.msg == 'success' && result.code == 0){
 							// console.log("登录成功");
 							location.href = "main.jsp";
-                        }else if(result.Verfystatus == 'Wrong'){
-                            layer.msg('验证码错误');
-                            addPic(); // 回调验证码函数
-							// console.log("用户名或密码错误");
                         }else{
                         	layer.msg("用户名或密码错误");
 						}
                     }
                 });
+				<%--$("form").prop("action"," ${pageContext.request.contextPath}/login");--%>
                 return false;
             });
         });

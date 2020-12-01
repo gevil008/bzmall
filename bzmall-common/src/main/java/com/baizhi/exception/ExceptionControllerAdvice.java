@@ -2,6 +2,7 @@ package com.baizhi.exception;
 
 import com.baizhi.common.ExceptionCodeEnum;
 import com.baizhi.vo.R;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -48,4 +49,25 @@ public class ExceptionControllerAdvice {
                 ExceptionCodeEnum.ORDER_FAIL.getMsg()).put("data",map);
     }
 
+    /**
+     * 自定义验证码异常处理
+     */
+    @ExceptionHandler(VerificationException.class)
+    public R getVerificationException(VerificationException e){
+        String message = e.getMessage();
+        return R.error(
+                ExceptionCodeEnum.VERIFICATION_FAIL.getCode(),
+                ExceptionCodeEnum.VERIFICATION_FAIL.getMsg()).put("data",message);
+    }
+
+    /**
+     * 用户名不存在
+     */
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public R getUsernameNotFoundException(UsernameNotFoundException e){
+        String message = e.getMessage();
+        return R.error(
+                ExceptionCodeEnum.NOUSER_FAIL.getCode(),
+                ExceptionCodeEnum.NOUSER_FAIL.getMsg()).put("data",message);
+    }
 }

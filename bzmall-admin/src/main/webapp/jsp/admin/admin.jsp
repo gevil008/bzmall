@@ -1,4 +1,5 @@
 <%@page isELIgnored="false" pageEncoding="UTF-8" contentType="text/html; UTF-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,7 +38,9 @@
 	<!--删除选中/添加  按钮-->
 	<script type="text/html" id="toolbar">
 		<button onclick="handleRemoveAny()" class="layui-btn layui-btn-primary">删除选中<i class="layui-icon layui-icon-delete"/> </button>
-		<button onclick="openAddForm()" class="layui-btn layui-btn-danger">添加<i class="layui-icon layui-icon-addition"></i></button>
+		<sec:authorize access="hasRole('admin')">
+			<button onclick="openAddForm()" class="layui-btn layui-btn-danger">添加<i class="layui-icon layui-icon-addition"></i></button>
+		</sec:authorize>
 		<!-- 1 显示搜索表单 -->
 		<div class="layui-inline">
 			<form action="" class="layui-form">

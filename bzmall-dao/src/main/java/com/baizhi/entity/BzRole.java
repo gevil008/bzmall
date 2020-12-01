@@ -12,20 +12,19 @@ import java.io.Serializable;
  * 
  * </p>
  *
- * @author lby
- * @since 2020-11-24
+ * @author caoyafei
+ * @since 2020-12-01
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BzAdminRole implements Serializable {
+public class BzRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer Id;
-
-    private Integer adminId;
-
+    @TableId(value = "role_id", type = IdType.AUTO)
     private Integer roleId;
+
+    private String roleName;
+
 
 }

@@ -5,6 +5,7 @@ import com.baizhi.entity.BzMenu;
 import com.baizhi.service.BzMenuService;
 import com.baizhi.vo.ZTreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,6 +39,7 @@ public class BzMenuController {
         return bzMenuService.selectMenusbySql();
     }
 
+    @PreAuthorize("hasAnyRole('admin','superadmin')")
     @RequestMapping("/getZTreeNodes")
     public List<ZTreeNode> selectMenusbyZtree(){
         return bzMenuService.selectMenusbyZtree();

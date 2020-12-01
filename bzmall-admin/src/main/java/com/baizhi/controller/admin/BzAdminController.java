@@ -1,4 +1,4 @@
-package com.baizhi.controller;
+package com.baizhi.controller.admin;
 
 
 import cn.hutool.captcha.CaptchaUtil;
@@ -11,10 +11,12 @@ import com.baizhi.vo.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -35,18 +37,15 @@ public class BzAdminController {
     LineCaptcha lineCaptcha = null;
 
     @GetMapping("/getCaptcha")
-    public void getCaptcha(HttpServletResponse response, HttpServletRequest request) {
-        lineCaptcha = CaptchaUtil.createLineCaptcha(200, 100);
-        try {
-            request.getSession().setAttribute("CAPTCHA_KEY", lineCaptcha.getCode());
-            response.setContentType("image/png");
-            response.setHeader("Pragma", "No-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expire", 0);
-            lineCaptcha.write(response.getOutputStream());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    public void getCaptcha(HttpSession session, HttpServletResponse response) throws IOException {
+        // 定义图形验证码的长和宽
+        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(200, 100);
+
+        session.setAttribute("code",lineCaptcha.getCode());
+
+        System.err.println(lineCaptcha.getCode());
+
+        lineCaptcha.write(response.getOutputStream());
     }
 
     @PostMapping("/login/{code}")
@@ -63,6 +62,7 @@ public class BzAdminController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('admin','superadmin')")
     @GetMapping("/admins")
     @LogAnnotation(type = LogTypeEnum.SELECT,content = "查询系统管理-管理员列表")
     public R showPage(@RequestParam(defaultValue = "1")Integer page,
@@ -128,5 +128,25 @@ public class BzAdminController {
             return R.error().put("status","error");
         }
     }
+    /**
+     * 接受成功的请求
+     * @return
+     */
+    @RequestMapping("/successForward")
+    @ResponseBody
+    public R successForward(){
+        System.err.println("ok");
+        return R.ok();
+    }
 
+    /**
+     * 接受失败的请求
+     * @return
+     */
+    @RequestMapping("/failureForward")
+    @ResponseBody
+    public R failureForward(){
+        System.err.println("no");
+        return R.error();
+    }
 }

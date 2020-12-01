@@ -43,6 +43,10 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!--<dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -63,6 +67,13 @@
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-annotation</artifactId>
             <version>3.2.0</version>
+        </dependency>
+
+        <!--整合了各种常见加密技术的工具类-->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
         </dependency>
 
     </dependencies>

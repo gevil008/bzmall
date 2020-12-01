@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface BzAdminService extends IService<BzAdmin> {
     List<BzAdmin> selectAllAdmin();
+    boolean addBzAdmin(BzAdmin bzAdmin);
 }
