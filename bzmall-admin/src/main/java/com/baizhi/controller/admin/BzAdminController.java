@@ -62,7 +62,7 @@ public class BzAdminController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('admin','superadmin')")
+    @PreAuthorize("@ss.hasAnyRole('admin','superadmin')")
     @GetMapping("/admins")
     @LogAnnotation(type = LogTypeEnum.SELECT,content = "查询系统管理-管理员列表")
     public R showPage(@RequestParam(defaultValue = "1")Integer page,

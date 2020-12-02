@@ -10,6 +10,7 @@ import com.baizhi.vo.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class PmsBrandController {
     private PmsBrandService pmsBrandService;
 
     @GetMapping("/brands")
+    @PreAuthorize("@ss.hasRole('admin')")
     @LogAnnotation(content = "商品系统-品牌管理查询")
     public R showPage(@RequestParam(defaultValue = "1")Integer page,
                       @RequestParam(defaultValue = "5")Integer limit,

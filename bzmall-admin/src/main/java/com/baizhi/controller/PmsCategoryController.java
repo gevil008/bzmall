@@ -25,7 +25,7 @@ public class PmsCategoryController {
     @Autowired
     private PmsCategoryService pmsCategoryService;
 
-    @PreAuthorize("hasRole('superadmin')")
+    @PreAuthorize("@ss.hasRole('superadmin')")
     @RequestMapping("/getZTreeNodes")
     public List<ZTreeNode> selectCategoryByZtree(){
         return pmsCategoryService.selectCategoryByZtree();

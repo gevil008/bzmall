@@ -1,7 +1,6 @@
 package com.baizhi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
@@ -10,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Set;
 
 @Data
 public class BzAdmin implements Serializable, UserDetails{
@@ -33,12 +31,8 @@ public class BzAdmin implements Serializable, UserDetails{
      *
      * 官方给定的实现类是：SimpleGrantedAuthority
      */
-    @TableField(exist = false)
-    private Set<SimpleGrantedAuthority> authorities;
-
-    public void setAuthorities(Set<SimpleGrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
+    /*@TableField(exist = false)
+    private Set<SimpleGrantedAuthority> authorities;*/
 
     public BzAdmin() {
     }
@@ -55,7 +49,7 @@ public class BzAdmin implements Serializable, UserDetails{
      */
     @Override
     public Collection<? extends SimpleGrantedAuthority> getAuthorities() {
-        return authorities;
+        return null;
     }
 
     /**

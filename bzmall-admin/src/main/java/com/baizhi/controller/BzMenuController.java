@@ -39,7 +39,7 @@ public class BzMenuController {
         return bzMenuService.selectMenusbySql();
     }
 
-    @PreAuthorize("hasAnyRole('admin','superadmin')")
+    @PreAuthorize("@ss.hasAnyRole('admin','superadmin')")
     @RequestMapping("/getZTreeNodes")
     public List<ZTreeNode> selectMenusbyZtree(){
         return bzMenuService.selectMenusbyZtree();

@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j  // 注解方式
@@ -97,8 +94,9 @@ public class BzAdminServiceImpl extends ServiceImpl<BzAdminMapper, BzAdmin>
         }
 
         /**
-         * 查询授权信息
+         * 使用官方的查询授权信息
          */
+/*
         Set<String> roles = bzRoleService.getRolesByUsername(username);
         System.err.println(roles);
 
@@ -119,10 +117,10 @@ public class BzAdminServiceImpl extends ServiceImpl<BzAdminMapper, BzAdmin>
         // 合并两个set
         roles.addAll(permissions);
 
-        /**
+        *//**
          * 将泛型为String 的set
          * 改为泛型为 SimpleGrantedAuthority的set
-         */
+         *//*
 
         Set<SimpleGrantedAuthority> authorities = roles.stream()
                 .map(name -> {
@@ -131,7 +129,7 @@ public class BzAdminServiceImpl extends ServiceImpl<BzAdminMapper, BzAdmin>
 
         // 授权数据的封装
         admin.setAuthorities(authorities);
-
+*/
         return admin;
     }
 }
