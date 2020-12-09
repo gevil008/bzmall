@@ -1,6 +1,7 @@
 package com.baizhi;
 
 import com.baizhi.entity.BzAdmin;
+import com.baizhi.entity.BzRole;
 import com.baizhi.service.BzAdminService;
 import com.baizhi.service.BzRoleService;
 import com.baizhi.service.PmsCategoryService;
@@ -71,5 +72,11 @@ public class ServiceTests extends AppRunTests{
         System.err.println(set);
         Set<String> lisi = bzRoleService.getPermissionsByUsername("zhangsan");
         System.err.println(lisi);
+    }
+
+    @Test
+    public void test6(){
+        List<BzRole> list = bzRoleService.list();
+        list.forEach(System.err::println);
     }
 }

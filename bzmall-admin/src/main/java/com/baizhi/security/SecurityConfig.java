@@ -90,6 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/img/**",
                         "/css/**",
                         "/js/**",
+                        "/menu/**",
                         "/ztree/**",
                         "/login.jsp",
                         "/login",

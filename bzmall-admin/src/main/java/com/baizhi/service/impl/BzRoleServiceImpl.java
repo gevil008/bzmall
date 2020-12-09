@@ -4,6 +4,7 @@ import com.baizhi.dao.*;
 import com.baizhi.entity.*;
 import com.baizhi.service.BzRoleService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class BzRoleServiceImpl implements BzRoleService {
+public class BzRoleServiceImpl extends ServiceImpl<BzRoleMapper, BzRole> implements BzRoleService {
 
     @Autowired
     private BzAdminMapper bzAdminMapper;
@@ -26,6 +27,7 @@ public class BzRoleServiceImpl implements BzRoleService {
     private BzMenuMapper bzMenuMapper;
 
     @Override
+    // @AddCacheAnnotation
     public Set<String> getRolesByUsername(String username) {
 
         BzAdmin bzAdmin = bzAdminMapper.selectOne(
@@ -50,6 +52,7 @@ public class BzRoleServiceImpl implements BzRoleService {
     }
 
     @Override
+    // @AddCacheAnnotation
     public Set<String> getPermissionsByUsername(String username) {
 
         Set<String> byUsername = getRolesByUsername(username);

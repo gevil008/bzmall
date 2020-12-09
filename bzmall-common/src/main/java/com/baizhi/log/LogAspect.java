@@ -92,7 +92,7 @@ public class LogAspect {
         /**
          * 2 日志信息添加数据库
          */
-        System.err.println(bzLog);
+        // System.err.println(bzLog);
         logMapper.insert(bzLog);
 
         return result;

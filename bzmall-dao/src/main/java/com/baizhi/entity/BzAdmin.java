@@ -7,11 +7,10 @@ import lombok.Data;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 @Data
-public class BzAdmin implements Serializable, UserDetails{
+public class BzAdmin implements UserDetails{
 
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;

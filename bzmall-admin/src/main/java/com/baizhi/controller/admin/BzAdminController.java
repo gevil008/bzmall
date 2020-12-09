@@ -4,14 +4,17 @@ package com.baizhi.controller.admin;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import com.baizhi.entity.BzAdmin;
+import com.baizhi.entity.BzAdminRole;
 import com.baizhi.enums.LogTypeEnum;
 import com.baizhi.log.LogAnnotation;
+import com.baizhi.service.BzAdminRoleService;
 import com.baizhi.service.BzAdminService;
 import com.baizhi.vo.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +37,11 @@ public class BzAdminController {
     @Autowired
     private BzAdminService bzAdminService;
 
-    LineCaptcha lineCaptcha = null;
+    @Autowired
+    private BzAdminRoleService bzAdminRoleService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/getCaptcha")
     public void getCaptcha(HttpSession session, HttpServletResponse response) throws IOException {
@@ -47,6 +54,8 @@ public class BzAdminController {
 
         lineCaptcha.write(response.getOutputStream());
     }
+/*
+    LineCaptcha lineCaptcha = null;
 
     @PostMapping("/login/{code}")
     public R login(@RequestBody BzAdmin bzAdmin,@PathVariable("code") String code){
@@ -61,6 +70,7 @@ public class BzAdminController {
             return R.error().put("Verfystatus","Wrong");
         }
     }
+*/
 
     @PreAuthorize("@ss.hasAnyRole('admin','superadmin')")
     @GetMapping("/admins")
@@ -96,11 +106,19 @@ public class BzAdminController {
         return R.ok().put("status","success");
     }
 
-    @PostMapping("/admins")
+    @PostMapping("/admins/{roleId}")
     @LogAnnotation(type = LogTypeEnum.ADD,content = "添加管理员用户")
-    public R addOne(@RequestBody BzAdmin bzAdmin){
-        System.err.println(bzAdmin);
-        if (bzAdminService.save(bzAdmin)){
+    public R addOne(@RequestBody BzAdmin bzAdmin,
+                    @PathVariable("roleId")Integer roleId){
+        if (bzAdminService.addBzAdmin(bzAdmin)){
+            BzAdmin admin = bzAdminService.getOne(new QueryWrapper<BzAdmin>()
+                    .eq("username", bzAdmin.getUsername()));
+            BzAdminRole adminRole = new BzAdminRole();
+            adminRole.setAdminId(admin.getId());
+            adminRole.setRoleId(roleId);
+            if (!bzAdminRoleService.save(adminRole)){
+                return R.error().put("status","error");
+            }
             return R.ok().put("status","success");
         } else {
             return R.error().put("status","error");
@@ -118,11 +136,14 @@ public class BzAdminController {
         }
     }
 
-    @PutMapping("/admins")
+    @PutMapping("/admins/{roleId}")
     @LogAnnotation(type = LogTypeEnum.UPDATE,content = "修改管理员用户信息")
-    public R updateOne(@RequestBody BzAdmin bzAdmin){
+    public R updateOne(@RequestBody BzAdmin bzAdmin,
+                       @PathVariable("roleId")Integer roleId){
         System.err.println(bzAdmin);
-        if (bzAdminService.updateById(bzAdmin)){
+        String encode = bCryptPasswordEncoder.encode(bzAdmin.getPassword());
+        bzAdmin.setPassword(encode);
+        if (bzAdminService.updateById(bzAdmin) && bzAdminRoleService.updateRoleId(bzAdmin.getId(),roleId)){
             return R.ok().put("status","success");
         } else {
             return R.error().put("status","error");

@@ -25,6 +25,9 @@
 					{title:"密码",field:"password",templet:function (d) {
 							return "* * * * * *";
 						}},
+					{title:"状态",field:"status",templet:function (d) {
+							return d.status == 0 ? "正常":"冻结";
+						}},
 					{title:"操作",toolbar:"#operation"}//操作列
 				]],
 				url:"/admin/admins",
@@ -38,7 +41,7 @@
 	<!--删除选中/添加  按钮-->
 	<script type="text/html" id="toolbar">
 		<button onclick="handleRemoveAny()" class="layui-btn layui-btn-primary">删除选中<i class="layui-icon layui-icon-delete"/> </button>
-		<sec:authorize access="hasRole('admin')">
+		<sec:authorize access="@ss.hasRole('admin')">
 			<button onclick="openAddForm()" class="layui-btn layui-btn-danger">添加<i class="layui-icon layui-icon-addition"></i></button>
 		</sec:authorize>
 		<!-- 1 显示搜索表单 -->
@@ -110,19 +113,41 @@
 		<form class="layui-form" action="" lay-filter="addForm">
 			<div class="layui-form-item">
 				<label class="layui-form-label">用户名</label>
-				<div class="layui-input-block" >
+				<div class="layui-input-block" style="width: 400px;">
 					<input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">密码</label>
+				<div class="layui-input-block"  style="width: 400px;">
+					<input type="text" id="password1" name="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">确认密码</label>
+				<div class="layui-input-block" style="width: 400px;" >
+					<input type="text" id="password2" name="password2" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">角色</label>
+				<div class="layui-input-block" style="width: 400px;">
+					<select name="roleId" lay-verify="required" id="classifyId">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">状态</label>
 				<div class="layui-input-block" >
-					<input type="text" name="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+					<label><input type="radio" name="status" value="0" title="正常" checked></label>
+					<label><input type="radio" name="status" value="1" title="禁用"></label>
 				</div>
 			</div>
 
 			<div class="layui-form-item" >
-				<div class="layui-input-block">
+				<div class="layui-input-block"  align="center" style="width: 400px">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="go">添加</button>
 					<button type="button" class="layui-btn" id="add-form-cancel">取消</button>
 				</div>
@@ -145,14 +170,34 @@
 					type:1,
 					content:$("#addForm").html(),
 					title:"添加",
-					area:"350px",
+					area:['600px','400px'],
 					success:function(layerobj,index){
 						//在弹出层弹出成功后调用
+						// 渲染表单中的所有标签
+						form.render();
+						$.ajax({
+							url:"/role/roles",
+							type:"GET",
+							dataType:"json",
+							success:function(data){
+								$.each(data.success, function (index, item) {
+									$('#classifyId').append(new Option(item.roleName,item.roleId));//往下拉菜单里添加元素
+								});
+								form.render();
+							}, error: function () {
+								alert("查询角色失败！！！")
+							}
+						})
 						// 添加请求
 						form.on("submit(go)",function(data){
 							console.log(data.field);
+							console.log(data.field.roleId)
+							if ($("#password1").val() != $("#password2").val()){
+								alert("两次密码不一致");
+								return false;
+							}
 							$.ajax({
-								url:"/admin/admins",
+								url:"/admin/admins/"+data.field.roleId,
 								data:JSON.stringify(data.field),
 								type:"POST",
 								contentType:"application/json",
@@ -187,20 +232,41 @@
 		<form class="layui-form" action="" lay-filter="updateForm">
 			<div class="layui-form-item">
 				<label class="layui-form-label">用户名</label>
-				<div class="layui-input-block" >
+				<div class="layui-input-block"  style="width: 400px;">
 					<input type="hidden" name="id">
 					<input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label">密码</label>
-				<div class="layui-input-block" >
-					<input type="text" name="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				<label class="layui-form-label">新密码</label>
+				<div class="layui-input-block"  style="width: 400px;">
+					<input type="text" id="password3" name="password" required  lay-verify="required" placeholder="请输入密码" value="" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">确认密码</label>
+				<div class="layui-input-block"  style="width: 400px;">
+					<input type="text" id="password4" name="password" required  lay-verify="required" placeholder="请输入密码" value="" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">角色</label>
+				<div class="layui-input-block" style="width: 400px;">
+					<select name="roleId" lay-verify="required" id="classifyId2">
+						<option value=""></option>
+					</select>
 				</div>
 			</div>
 
 			<div class="layui-form-item">
-				<div class="layui-input-block">
+				<label class="layui-form-label">状态</label>
+				<div class="layui-input-block" >
+					<label><input type="radio" name="status" value="0" title="正常" checked></label>
+					<label><input type="radio" name="status" value="1" title="禁用"></label>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block" align="center" style="width: 400px;">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="update-go">添加</button>
 					<button type="button" class="layui-btn" id="update-form-cancel">取消</button>
 				</div>
@@ -226,19 +292,39 @@
 						type:1,
 						content:$("#updateForm").html(),
 						title:"修改",
-						area:"350px",
+						area:['600px','400px'],
 						success:function(layerObj,index){
 
+							// 重新渲染表单内的所有控件
+							form.render();
+							$.ajax({
+								url:"/role/roles",
+								type:"GET",
+								dataType:"json",
+								success:function(data){
+									$.each(data.success, function (index, item) {
+										$('#classifyId2').append(new Option(item.roleName,item.roleId));//往下拉菜单里添加元素
+									});
+									form.render();
+								}, error: function () {
+									alert("查询角色失败！！！")
+								}
+							})
 							//回显表单数据
 							console.log(obj.data);//要更新的那行的原始数据
+							obj.data.password=null;
 							form.val("updateForm",obj.data);
 
 							//监听更新表单的提交事件
 							form.on("submit(update-go)",function(data){
 								//当更新表单,提交数据的时候,执行当前行数 data.field获取到更新表单最新的数据
 								console.log(data.field);
+								if ($("#password3").val() != $("#password4").val()){
+									alert("两次密码不一致");
+									return false;
+								}
 								$.ajax({
-									url:"/admin/admins",
+									url:"/admin/admins/"+data.field.roleId,
 									type:"put",
 									data:JSON.stringify(data.field),
 									contentType:"application/json",

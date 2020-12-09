@@ -7,11 +7,16 @@ server:
 #数据源的配置
 spring:
   datasource:
-    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    url: jdbc:p6spy:mysql://localhost:3306/bzmall?useUnicode=true&characterEncoding=UTF-8
+    # com.p6spy.engine.spy.P6SpyDriver   p6spy性能监控 通过日志查看mybatis-plus的sql语句执行详情
+    # jdbc:p6spy:mysql://localhost:3306/bzmall?useUnicode=true&characterEncoding=UTF-8
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bzmall?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
+    # 设置redis缓存
+#  redis:
+#    host: 192.168.200.25
   servlet:
     multipart:
       max-file-size: 5MB #单个文件最多上传的文件大小
@@ -35,5 +40,5 @@ logging:
     # 具体包的日志等级 优先级 大于全局日志等级
     # 如果全局是info dao包是 debug 在指定dao包的代码的时候 按照debug执行
 #      logic-delete-value: 1
-    com.baizhi.dao: debug
-    com.baizhi.service: debug
+#    com.baizhi.dao: debug
+#    com.baizhi.service: debug

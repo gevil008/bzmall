@@ -1,6 +1,7 @@
 package com.baizhi.service;
 
 import com.baizhi.entity.PmsCategory;
+import com.baizhi.vo.CascaderNodeVo;
 import com.baizhi.vo.ZTreeNode;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -16,4 +17,6 @@ import java.util.List;
  */
 public interface PmsCategoryService extends IService<PmsCategory> {
     List<ZTreeNode> selectCategoryByZtree();
+
+    List<CascaderNodeVo> getCascaderNodeVos();
 }

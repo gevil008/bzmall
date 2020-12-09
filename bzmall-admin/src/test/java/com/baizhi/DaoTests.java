@@ -6,12 +6,15 @@ import com.baizhi.dao.CmfzUserDao;
 import com.baizhi.dao.PmsBrandMapper;
 import com.baizhi.entity.BzAdmin;
 import com.baizhi.entity.BzMenu;
+import com.baizhi.entity.CmfzUser;
 import com.baizhi.service.BzAdminService;
 import com.baizhi.service.BzRoleService;
 import com.baizhi.service.PmsBrandService;
+import com.baizhi.util.PlaceUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DaoTests extends AppRunTests{
@@ -35,6 +38,11 @@ public class DaoTests extends AppRunTests{
 
     @Autowired
     private BzRoleService bzRoleService;
+
+    @Autowired
+    private CmfzUserDao cmfzUserDao;
+
+
     @Test
     public void test(){
         List<BzMenu> menus = bzMenuMapper.selectMenusbySql();
@@ -58,4 +66,17 @@ public class DaoTests extends AppRunTests{
         bzAdmins.forEach(System.err::println);
     }
 
+    @Test
+    public void test4(){
+        List<CmfzUser> list = new ArrayList<>();
+        long start = System.currentTimeMillis();
+        for (int j=0;j<=10;j++) {
+            for (int i = 0; i <= 10000; i++) {
+                list.add(PlaceUtil.getUser());
+            }
+            cmfzUserDao.add(list);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
+    }
 }
