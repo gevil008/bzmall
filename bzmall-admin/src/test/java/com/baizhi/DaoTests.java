@@ -66,15 +66,20 @@ public class DaoTests extends AppRunTests{
         bzAdmins.forEach(System.err::println);
     }
 
+    /**
+     * 百万数据的sql添加
+     */
     @Test
     public void test4(){
         List<CmfzUser> list = new ArrayList<>();
         long start = System.currentTimeMillis();
         for (int j=0;j<=10;j++) {
-            for (int i = 0; i <= 10000; i++) {
-                list.add(PlaceUtil.getUser());
+            for (int i = 0; i <= 10; i++) {
+                for (int k = 0; k < 10000 ; k++) {
+                    list.add(PlaceUtil.getUser());
+                }
+                cmfzUserDao.add(list);
             }
-            cmfzUserDao.add(list);
         }
         long end = System.currentTimeMillis();
         System.out.println(end-start);
