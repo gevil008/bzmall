@@ -5,13 +5,20 @@ import com.baizhi.entity.BzAdmin;
 import com.baizhi.entity.BzLog;
 import com.baizhi.enums.LogTypeEnum;
 import com.baizhi.util.IPKit;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -28,6 +35,9 @@ public class LogAspect {
 
     @Autowired
     private HttpServletRequest request;
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
 
     /**
      * 日志增强方法
@@ -90,10 +100,25 @@ public class LogAspect {
         long endTime = System.currentTimeMillis();
         bzLog.setLogTime((int) (endTime - startTime));
         /**
-         * 2 日志信息添加数据库
+         * 2 日志信息添加mq中
+         * 通过mq的监听器消费到数据库中
          */
         // System.err.println(bzLog);
-        logMapper.insert(bzLog);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(bzLog);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        String finalJson = json;
+        jmsTemplate.send("mall-log", new MessageCreator() {
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                return session.createTextMessage(finalJson);
+            }
+        });
+        // logMapper.insert(bzLog);
 
         return result;
     }
